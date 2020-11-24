@@ -2,6 +2,7 @@
 #define CNFG_IMPLEMENTATION
 #define RDUI_IMPLEMENTATION
 #include "rawgd.h"
+#include <rdui/default-elements.h>
 #include <rawdraw/os_generic.h>
 
 #include <math.h>
@@ -46,19 +47,35 @@ long get_time() {
   return round(OGGetAbsoluteTime() * 10000);
 }
 
+void play(struct RDUIButtonData* button) {
+  playing_level = &levels[0];
+  when_started_playing = get_time();
+}
+
+void fail() {
+  playing_level = NULL;
+  when_started_playing = 0;
+}
+
 int main() {
   RDUIInit();
   CNFGSetup("Raw Geometry Dash", 800, 600);
   
+  struct RDUIButtonData play_button = {
+    .text = "Play",
+    .font_size = 6,
+    .padding = 5,
+    .color = 0x4444AA,
+    .font_color = 0x00,
+    .position = { .x = 300, .y = 300},
+    .clicked_handler = play
+  };
+  
+  RDUIPushNode(RDUINewButton(&play_button));
+  
   while(1) {
     CNFGClearFrame();
     CNFGHandleInput();
-    
-    RDUIDispatchEvent(RDUIEvent_render, NULL);
-    
-    CNFGColor(0xff3333);
-    CNFGTackRectangle(10, 10, 20, 20);
-    
     CNFGSwapBuffers();
   }
 }
