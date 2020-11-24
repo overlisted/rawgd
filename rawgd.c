@@ -11,15 +11,15 @@ static struct level* playing_level = NULL;
 static time_t when_started_playing = 0;
 
 void HandleKey(int keycode, int bDown) {
-	RDUIHandleKeyImpl(keycode, bDown);
+	if(!playing_level) RDUIHandleKeyImpl(keycode, bDown);
 }
 
 void HandleButton(int x, int y, int button, int bDown) {
-	RDUIHandleButtonImpl(x, y, button, bDown);
+	if(!playing_level) RDUIHandleButtonImpl(x, y, button, bDown);
 }
 
 void HandleMotion(int x, int y, int mask) {
-	RDUIHandleMotionImpl(x, y, mask);
+	if(!playing_level) RDUIHandleMotionImpl(x, y, mask);
 }
 
 void HandleDestroy() {
