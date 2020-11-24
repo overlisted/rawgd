@@ -1,0 +1,9 @@
+[submodule "rawdraw"]
+	path = rawdraw
+	url = https://github.com/cntools/rawdraw
+[submodule "cnfa"]
+	path = cnfa
+	url = https://github.com/cntools/cnfa
+[submodule "rdui"]
+	path = rdui
+	url = https://github.com/overlisted/rdui
