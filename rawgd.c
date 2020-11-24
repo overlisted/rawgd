@@ -19,6 +19,26 @@ void HandleDestroy() {
   exit(0);
 }
 
+static struct object test_objects[] = {
+  {
+    .type = square,
+    .position = { .x = 100, .y = 100 }
+  },
+  {
+    .type = spike,
+    .position = { .x = 160, .y = 100 }
+  }
+};
+
+static struct level levels[] = {
+  {
+    .name = "test",
+    .difficulty = 1,
+    .objects_count = 2,
+    .objects = test_objects
+  }
+};
+
 int main() {
   RDUIInit();
   CNFGSetup("Raw Geometry Dash", 800, 600);
