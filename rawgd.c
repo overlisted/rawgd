@@ -2,6 +2,9 @@
 #define CNFG_IMPLEMENTATION
 #define RDUI_IMPLEMENTATION
 #include "rawgd.h"
+#include <rawdraw/os_generic.h>
+
+#include <math.h>
 
 void HandleKey(int keycode, int bDown) {
 	RDUIHandleKeyImpl(keycode, bDown);
@@ -38,6 +41,10 @@ static struct level levels[] = {
     .objects = test_objects
   }
 };
+
+long get_time() {
+  return round(OGGetAbsoluteTime() * 10000);
+}
 
 int main() {
   RDUIInit();
