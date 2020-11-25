@@ -7,11 +7,38 @@
 
 #include <math.h>
 
+static struct object test_objects[] = {
+  {
+    .type = square,
+    .position = { .x = 100, .y = 100 }
+  },
+  {
+    .type = spike,
+    .position = { .x = 160, .y = 100 }
+  }
+};
+
+static const level_count = 1;
+static struct level levels[] = {
+  {
+    .name = "test",
+    .difficulty = 1,
+    .objects_count = 2,
+    .objects = test_objects
+  }
+};
+
 static struct level* playing_level = NULL;
 static time_t when_started_playing = 0;
+static size_t selected_level_index = 0;
 
 void HandleKey(int keycode, int bDown) {
-	if(!playing_level) RDUIHandleKeyImpl(keycode, bDown);
+	if(!playing_level) { // in menu
+    RDUIHandleKeyImpl(keycode, bDown);
+    
+    if(keycode == CNFG_KEY_RIGHT_ARROW && selected_level_index < level_count - 1) selected_level_index++;
+    if(keycode == CNFG_KEY_LEFT_ARROW && selected_level_index > 0) selected_level_index--;
+  }
 }
 
 void HandleButton(int x, int y, int button, int bDown) {
@@ -26,32 +53,12 @@ void HandleDestroy() {
   exit(0);
 }
 
-static struct object test_objects[] = {
-  {
-    .type = square,
-    .position = { .x = 100, .y = 100 }
-  },
-  {
-    .type = spike,
-    .position = { .x = 160, .y = 100 }
-  }
-};
-
-static struct level levels[] = {
-  {
-    .name = "test",
-    .difficulty = 1,
-    .objects_count = 2,
-    .objects = test_objects
-  }
-};
-
 long get_time() {
   return round(OGGetAbsoluteTime() * 10000);
 }
 
 void play(struct RDUIButtonData* button) {
-  playing_level = &levels[0];
+  playing_level = &levels[selected_level_index];
   when_started_playing = get_time();
 }
 
