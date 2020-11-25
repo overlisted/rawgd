@@ -131,6 +131,14 @@ int main() {
     if(playing_level) {
       render_level();
     } else {
+      CNFGColor(0xffffff);
+      CNFGPenX = 300;
+      CNFGPenY = 50;
+      CNFGDrawText("Level:", 7);
+      CNFGPenX = 300;
+      CNFGPenY = 100;
+      CNFGDrawText(levels[selected_level_index].name, 7);
+      
       RDUIDispatchEvent(RDUIEvent_render, NULL);
     }
 
