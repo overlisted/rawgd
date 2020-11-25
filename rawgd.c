@@ -45,6 +45,8 @@ void HandleKey(int keycode, int bDown) {
     
     if(keycode == CNFG_KEY_RIGHT_ARROW && selected_level_index < level_count - 1) selected_level_index++;
     if(keycode == CNFG_KEY_LEFT_ARROW && selected_level_index > 0) selected_level_index--;
+  } else {
+    if(bDown && keycode == ' ') jump();
   }
 }
 
@@ -144,6 +146,11 @@ void fall() {
   }
 }
 
+void render_player() {
+  CNFGColor(0xff8888);
+  CNFGTackRectangle(player_x, player_y, player_x + SHAPE_SIZE, player_y + SHAPE_SIZE);
+}
+
 int main() {
   RDUIInit();
   CNFGSetup("Raw Geometry Dash", 800, 600);
@@ -165,7 +172,10 @@ int main() {
     CNFGHandleInput();
 
     if(playing_level) {
+      if(is_on_spike()) fail();
       render_level();
+      fall();
+      render_player();
     } else {
       CNFGColor(0xffffff);
       CNFGPenX = 300;
