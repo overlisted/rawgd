@@ -32,6 +32,13 @@ static struct level* playing_level = NULL;
 static time_t when_started_playing = 0;
 static size_t selected_level_index = 0;
 
+static const float player_x = 400;
+static float player_y = 100;
+
+void jump() {
+  player_y -= 100;
+}
+
 void HandleKey(int keycode, int bDown) {
 	if(!playing_level) { // in menu
     RDUIHandleKeyImpl(keycode, bDown);
@@ -105,6 +112,35 @@ void render_level() {
         break;
       }
     }
+  }
+}
+
+int is_on_ground() {
+  if(player_y > 100) return 1; 
+  for(int i = 0; i < playing_level->objects_count; i++) {
+    RDPoint pos = playing_level->objects[i].position;
+    if(player_x < pos.x || player_x > pos.x + SHAPE_SIZE) continue;
+    if(player_y < pos.y + SHAPE_SIZE) return 1;
+  }
+                     
+  return 0;
+}
+
+int is_on_spike() {
+  for(int i = 0; i < playing_level->objects_count; i++) {
+    RDPoint pos = playing_level->objects[i].position;
+    if(player_x < pos.x || player_x > pos.x + SHAPE_SIZE) continue;
+    if(playing_level->objects[i].type != spike) continue;
+    
+    if(player_y < pos.y + SHAPE_SIZE) return 1;
+  }
+  
+  return 0;
+}
+
+void fall() {
+  if(!is_on_ground()) {
+    player_y += 10;
   }
 }
 
