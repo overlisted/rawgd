@@ -78,7 +78,7 @@ void fail() {
 
 long last_time;
 long get_position_offset() {
-  return (get_time(0) - when_started_playing) / 50;
+  return (get_time(0) - when_started_playing) / 50 - 600;
 }
 
 #define SQUARE_COLOR 0x40c040
