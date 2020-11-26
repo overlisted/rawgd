@@ -32,8 +32,8 @@ static struct level* playing_level = NULL;
 static time_t when_started_playing = 0;
 static size_t selected_level_index = 0;
 
-static const float player_x = 400;
-static float player_y = 100;
+static const short player_x = 400;
+static short player_y = 100;
 
 void jump() {
   player_y -= 100;
