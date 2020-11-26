@@ -118,12 +118,12 @@ void render_level() {
   }
 }
 
-int is_on_ground() {
-  if(player_y > 100) return 1; 
+int is_on_ground(short y) {
+  if(y > 100) return 1;
   for(int i = 0; i < playing_level->objects_count; i++) {
     RDPoint pos = playing_level->objects[i].position;
     if(player_x < pos.x || player_x > pos.x + SHAPE_SIZE) continue;
-    if(player_y < pos.y + SHAPE_SIZE) return 1;
+    if(y < pos.y + SHAPE_SIZE) return 1;
   }
                      
   return 0;
