@@ -76,6 +76,7 @@ void fail() {
   when_started_playing = 0;
 }
 
+long last_time;
 long get_position_offset() {
   return (get_time(0) - when_started_playing) / 50;
 }
@@ -141,8 +142,9 @@ int is_on_spike() {
 }
 
 void fall() {
-  if(!is_on_ground()) {
-    player_y += 10;
+  short distance = (get_time() - last_time) / 30;
+  if(!is_on_ground(player_y)) {
+    player_y += distance % 100;
   }
 }
 
@@ -167,6 +169,7 @@ int main() {
   
   RDUIPushNode(RDUINewButton(&play_button));
   
+  last_time = get_time();
   while(1) {
     CNFGClearFrame();
     CNFGHandleInput();
@@ -187,6 +190,7 @@ int main() {
       
       RDUIDispatchEvent(RDUIEvent_render, NULL);
     }
+    last_time = get_time();
 
     CNFGSwapBuffers();
   }
