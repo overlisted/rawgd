@@ -16,6 +16,7 @@ struct object {
 struct level {
   const char* name;
   float difficulty;
+  short ground_y;
   
   size_t objects_count;
   struct object* objects;

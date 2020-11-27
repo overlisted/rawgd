@@ -7,6 +7,9 @@
 
 #include <math.h>
 
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
 static struct object test_objects[] = {
   {
     .type = square,
@@ -23,6 +26,7 @@ static struct level levels[] = {
   {
     .name = "test",
     .difficulty = 1,
+    .ground_y = 100,
     .objects_count = 2,
     .objects = test_objects
   }
@@ -32,8 +36,8 @@ static struct level* playing_level = NULL;
 static time_t when_started_playing = 0;
 static size_t selected_level_index = 0;
 
-static const short player_x = 400;
-static short player_y = 100;
+static const short player_x = WINDOW_WIDTH / 2;
+static short player_y = 0;
 
 void jump() {
   player_y -= 100;
@@ -69,6 +73,7 @@ long get_time() {
 void play(struct RDUIButtonData* button) {
   playing_level = &levels[selected_level_index];
   when_started_playing = get_time();
+  player_y = playing_level->ground_y;
 }
 
 void fail() {
@@ -119,7 +124,7 @@ void render_level() {
 }
 
 int is_on_ground(short y) {
-  if(y > 100) return 1;
+  if(y > playing_level->ground_y) return 1;
   for(int i = 0; i < playing_level->objects_count; i++) {
     RDPoint pos = playing_level->objects[i].position;
     if(player_x < pos.x || player_x > pos.x + SHAPE_SIZE) continue;
@@ -144,7 +149,7 @@ int is_on_spike() {
 void fall() {
   short distance = (get_time() - last_time) / 30;
   if(!is_on_ground(player_y)) {
-    player_y += distance % 100;
+    player_y += distance % playing_level->ground_y;
   }
 }
 
