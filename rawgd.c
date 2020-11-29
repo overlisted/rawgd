@@ -21,8 +21,8 @@ static struct object test_objects[] = {
   }
 };
 
-static const level_count = 1;
-static struct level levels[] = {
+int level_count = 1;
+struct level levels[] = {
   {
     .name = "test",
     .difficulty = 1,
@@ -32,12 +32,11 @@ static struct level levels[] = {
   }
 };
 
-static struct level* playing_level = NULL;
-static time_t when_started_playing = 0;
-static size_t selected_level_index = 0;
-
-static const short player_x = WINDOW_WIDTH / 2;
-static short player_y = 0;
+struct level* playing_level = NULL;
+time_t when_started_playing = 0;
+size_t selected_level_index = 0;
+const short player_x = WINDOW_WIDTH / 2;
+short player_y = 0;
 
 void jump() {
   player_y -= 100;
@@ -68,18 +67,6 @@ void HandleDestroy() {
 
 long get_time() {
   return round(OGGetAbsoluteTime() * 10000);
-}
-
-void play(struct RDUIButtonData* button) {
-  playing_level = &levels[selected_level_index];
-  when_started_playing = get_time();
-  player_y = playing_level->ground_y;
-}
-
-void fail() {
-  playing_level = NULL;
-  when_started_playing = 0;
-  player_y = 0;
 }
 
 int does_intersect(RDPoint amin, RDPoint amax, RDPoint bmin, RDPoint bmax) {
@@ -173,6 +160,10 @@ void render_player() {
   CNFGTackRectangle(player_x, player_y, player_x + SHAPE_SIZE[0], player_y + SHAPE_SIZE[1]);
 }
 
+void handle_play_button(struct RDUIButtonData* data) {
+  play();
+}
+
 int main() {
   RDUIInit();
   CNFGSetup("Raw Geometry Dash", 800, 600);
@@ -184,7 +175,7 @@ int main() {
     .color = 0x4444AAFF,
     .font_color = 0x000000FF,
     .position = { .x = 300, .y = 300},
-    .clicked_handler = play
+    .clicked_handler = handle_play_button
   };
   
   RDUIPushNode(RDUINewButton(&play_button));
@@ -194,24 +185,33 @@ int main() {
     CNFGClearFrame();
     CNFGHandleInput();
 
-    if(playing_level) {
-      render_level();
-      fall();
-      render_player();
+    switch(current_state) {
+      case in_menu: {
+        CNFGColor(0xffffffff);
+        CNFGPenX = 300;
+        CNFGPenY = 50;
+        CNFGDrawText("Level:", 7);
+        CNFGPenX = 300;
+        CNFGPenY = 100;
+        CNFGDrawText(levels[selected_level_index].name, 7);
 
-      struct object* ground_obj = get_ground(player_y);
-      if(ground_obj && ground_obj->type == spike) fail();
-    } else {
-      CNFGColor(0xffffffff);
-      CNFGPenX = 300;
-      CNFGPenY = 50;
-      CNFGDrawText("Level:", 7);
-      CNFGPenX = 300;
-      CNFGPenY = 100;
-      CNFGDrawText(levels[selected_level_index].name, 7);
-      
-      RDUIDispatchEvent(RDUIEvent_render, NULL);
+        RDUIDispatchEvent(RDUIEvent_render, NULL);
+
+        break;
+      }
+
+      case playing: {
+        render_level();
+        fall();
+        render_player();
+
+        struct object* ground_obj = get_ground(player_y);
+        if(ground_obj && ground_obj->type == spike) fail();
+
+        break;
+      }
     }
+
     last_time = get_time();
 
     CNFGSwapBuffers();

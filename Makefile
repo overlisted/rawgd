@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -I. -Irdui -O1 -g -Wall
 LDFLAGS = -lX11 -lm -lpthread -lGL
 
-rawgd: rawgd.c
+rawgd: rawgd.c state.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 	
 run: rawgd
