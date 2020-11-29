@@ -79,6 +79,28 @@ void play(struct RDUIButtonData* button) {
 void fail() {
   playing_level = NULL;
   when_started_playing = 0;
+int does_intersect(RDPoint amin, RDPoint amax, RDPoint bmin, RDPoint bmax) {
+  int
+    a = amin.x < bmax.x,
+    b = amax.x > bmin.x,
+    c = amin.y < bmax.y,
+    d = amax.y > bmin.y;
+
+  return a && b && c && d;
+}
+
+int does_intersect_size(RDPoint amin, short asize[2], RDPoint bmin, short bsize[2]) {
+  RDPoint amax = {
+    .x = amin.x + asize[0],
+    .y = amin.y + asize[1]
+  };
+
+  RDPoint bmax = {
+    .x = bmin.x + bsize[0],
+    .y = bmin.y + bsize[1]
+  };
+
+  return does_intersect(amin, amax, bmin, bmax);
 }
 
 long last_time;
@@ -123,32 +145,22 @@ void render_level() {
   }
 }
 
-int is_on_ground(short y) {
-  if(y > playing_level->ground_y) return 1;
-  for(int i = 0; i < playing_level->objects_count; i++) {
-    RDPoint pos = playing_level->objects[i].position;
-    if(player_x < pos.x || player_x > pos.x + SHAPE_SIZE) continue;
-    if(y < pos.y + SHAPE_SIZE) return 1;
-  }
-                     
-  return 0;
-}
+struct object* get_ground(short y) {
+  long pos_offset = get_position_offset();
 
-int is_on_spike() {
+  RDPoint player_pos = {.x = player_x, .y = player_y};
   for(int i = 0; i < playing_level->objects_count; i++) {
     RDPoint pos = playing_level->objects[i].position;
-    if(player_x < pos.x || player_x > pos.x + SHAPE_SIZE) continue;
-    if(playing_level->objects[i].type != spike) continue;
-    
-    if(player_y < pos.y + SHAPE_SIZE) return 1;
+    RDPoint pos_moved = {.x = pos.x - pos_offset, y = pos.y};
+    if(does_intersect_size(pos_moved, SHAPE_SIZE, player_pos, SHAPE_SIZE)) return &playing_level->objects[i];
   }
-  
-  return 0;
+
+  return NULL;
 }
 
 void fall() {
   short distance = (get_time() - last_time) / 30;
-  if(!is_on_ground(player_y)) {
+  if(player_y < playing_level->ground_y && !get_ground(player_y)) {
     player_y += distance % playing_level->ground_y;
   }
 }
@@ -180,7 +192,8 @@ int main() {
     CNFGHandleInput();
 
     if(playing_level) {
-      if(is_on_spike()) fail();
+      struct object* ground_obj = get_ground(player_y);
+      if(ground_obj && ground_obj->type == spike) fail();
       render_level();
       fall();
       render_player();
