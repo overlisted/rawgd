@@ -79,6 +79,9 @@ void play(struct RDUIButtonData* button) {
 void fail() {
   playing_level = NULL;
   when_started_playing = 0;
+  player_y = 0;
+}
+
 int does_intersect(RDPoint amin, RDPoint amax, RDPoint bmin, RDPoint bmax) {
   int
     a = amin.x < bmax.x,
@@ -192,11 +195,12 @@ int main() {
     CNFGHandleInput();
 
     if(playing_level) {
-      struct object* ground_obj = get_ground(player_y);
-      if(ground_obj && ground_obj->type == spike) fail();
       render_level();
       fall();
       render_player();
+
+      struct object* ground_obj = get_ground(player_y);
+      if(ground_obj && ground_obj->type == spike) fail();
     } else {
       CNFGColor(0xffffffff);
       CNFGPenX = 300;
