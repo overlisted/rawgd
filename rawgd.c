@@ -159,9 +159,9 @@ struct object* get_ground(short y) {
 }
 
 void fall() {
-  short distance = (get_time() - last_time) / 30;
-  if(player_y < playing_level->ground_y && !get_ground(player_y)) {
-    player_y += distance % playing_level->ground_y;
+  short new_y = player_y + (get_time() - last_time) / 30 % playing_level->ground_y;
+  if(player_y < playing_level->ground_y && !get_ground(new_y)) {
+    player_y = new_y;
   }
 }
 
