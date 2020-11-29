@@ -89,7 +89,7 @@ long get_position_offset() {
 #define SQUARE_COLOR 0x40c040ff
 #define SPIKE_COLOR 0x4040c0ff
 
-#define SHAPE_SIZE 50
+static short SHAPE_SIZE[2] = {50, 50};
 
 void render_level() {
   long render_offset = get_position_offset();
@@ -105,15 +105,15 @@ void render_level() {
     switch(obj->type) {
       case square: {
         CNFGColor(SQUARE_COLOR);
-        CNFGTackRectangle(view_pos.x, view_pos.y, view_pos.x + SHAPE_SIZE, view_pos.y + SHAPE_SIZE);
+        CNFGTackRectangle(view_pos.x, view_pos.y, view_pos.x + SHAPE_SIZE[0], view_pos.y + SHAPE_SIZE[1]);
         break;
       }
       case spike: {
         CNFGColor(SPIKE_COLOR);
         RDPoint triangle[] = {
-          { .x = view_pos.x, .y = view_pos.y + SHAPE_SIZE },
-          { .x = view_pos.x + SHAPE_SIZE, .y = view_pos.y + SHAPE_SIZE },
-          { .x = view_pos.x + SHAPE_SIZE / 2, .y = view_pos.y },
+          { .x = view_pos.x, .y = view_pos.y + SHAPE_SIZE[1] },
+          { .x = view_pos.x + SHAPE_SIZE[0], .y = view_pos.y + SHAPE_SIZE[1] },
+          { .x = view_pos.x + SHAPE_SIZE[0] / 2, .y = view_pos.y },
         };
         
         CNFGTackPoly(triangle, 3);
@@ -154,8 +154,8 @@ void fall() {
 }
 
 void render_player() {
-  CNFGTackRectangle(player_x, player_y, player_x + SHAPE_SIZE, player_y + SHAPE_SIZE);
   CNFGColor(0xff8888ff);
+  CNFGTackRectangle(player_x, player_y, player_x + SHAPE_SIZE[0], player_y + SHAPE_SIZE[1]);
 }
 
 int main() {
