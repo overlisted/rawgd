@@ -86,8 +86,8 @@ long get_position_offset() {
   return (get_time(0) - when_started_playing) / 50 - 600;
 }
 
-#define SQUARE_COLOR 0x40c040
-#define SPIKE_COLOR 0x4040c0
+#define SQUARE_COLOR 0x40c040ff
+#define SPIKE_COLOR 0x4040c0ff
 
 #define SHAPE_SIZE 50
 
@@ -154,8 +154,8 @@ void fall() {
 }
 
 void render_player() {
-  CNFGColor(0xff8888);
   CNFGTackRectangle(player_x, player_y, player_x + SHAPE_SIZE, player_y + SHAPE_SIZE);
+  CNFGColor(0xff8888ff);
 }
 
 int main() {
@@ -166,8 +166,8 @@ int main() {
     .text = "Play",
     .font_size = 6,
     .padding = 5,
-    .color = 0x4444AA,
-    .font_color = 0x00,
+    .color = 0x4444AAFF,
+    .font_color = 0x000000FF,
     .position = { .x = 300, .y = 300},
     .clicked_handler = play
   };
@@ -185,7 +185,7 @@ int main() {
       fall();
       render_player();
     } else {
-      CNFGColor(0xffffff);
+      CNFGColor(0xffffffff);
       CNFGPenX = 300;
       CNFGPenY = 50;
       CNFGDrawText("Level:", 7);
