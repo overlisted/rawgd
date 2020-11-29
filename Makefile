@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -I. -O1 -g -Wall
+CFLAGS = -I. -Irdui -O1 -g -Wall
 LDFLAGS = -lX11 -lm -lpthread -lGL
 
 rawgd: rawgd.c
