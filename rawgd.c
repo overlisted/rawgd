@@ -1,11 +1,12 @@
+#include <stdio.h>
+#include <math.h>
+
 #define CNFGOGL // to not use disgusting legacy APIs of X11
 #define CNFG_IMPLEMENTATION
 #define RDUI_IMPLEMENTATION
 #include "rawgd.h"
 #include <rdui/default-elements.h>
 #include <rawdraw/os_generic.h>
-
-#include <math.h>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
