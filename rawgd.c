@@ -139,7 +139,7 @@ void render_level() {
 struct object* get_ground(short y) {
   long pos_offset = get_position_offset();
 
-  RDPoint player_pos = {.x = player_x, .y = player_y};
+  RDPoint player_pos = {.x = player_x, .y = y};
   for(int i = 0; i < playing_level->objects_count; i++) {
     RDPoint pos = playing_level->objects[i].position;
     RDPoint pos_moved = {.x = pos.x - pos_offset, y = pos.y};
