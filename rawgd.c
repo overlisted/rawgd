@@ -214,7 +214,8 @@ int main() {
         render_player();
 
         struct object* ground_obj = get_ground(player_y);
-        if(ground_obj && ground_obj->type == spike) fail();
+        struct object* inside_of = get_ground(player_y - SHAPE_SIZE[1] / 2);
+        if(inside_of || (ground_obj && ground_obj->type == spike)) fail();
 
         fall();
 
