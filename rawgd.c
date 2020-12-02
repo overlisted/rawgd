@@ -74,7 +74,7 @@ int does_intersect(RDPoint amin, RDPoint amax, RDPoint bmin, RDPoint bmax) {
   int
     a = amin.x < bmax.x,
     b = amax.x > bmin.x,
-    c = amin.y < bmax.y,
+    c = amin.y <= bmax.y,
     d = amax.y > bmin.y;
 
   return a && b && c && d;
@@ -150,9 +150,17 @@ struct object* get_ground(short y) {
 }
 
 void fall() {
-  short new_y = player_y + (get_time() - last_time) / 30 % playing_level->ground_y;
-  if(player_y < playing_level->ground_y && !get_ground(new_y)) {
-    player_y = new_y;
+  short new_y = player_y + (get_time() - last_time) / 30;
+  if(new_y > playing_level->ground_y) {
+    player_y = playing_level->ground_y;
+  } else {
+    struct object* ground = get_ground(new_y);
+    struct object* inside_of = get_ground(new_y - SHAPE_SIZE[1]);
+    if(inside_of) {
+      player_y = inside_of->position.y - SHAPE_SIZE[1];
+    } else if(ground) {
+      player_y = ground->position.y - SHAPE_SIZE[1];
+    } else player_y = new_y;
   }
 }
 
@@ -203,11 +211,12 @@ int main() {
 
       case playing: {
         render_level();
-        fall();
         render_player();
 
         struct object* ground_obj = get_ground(player_y);
         if(ground_obj && ground_obj->type == spike) fail();
+
+        fall();
 
         break;
       }
